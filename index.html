@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Abide">
+<meta name="theme-color" content="#8a5e2a">
+<title>Abide — Prayer Planner</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5efe2;--bg2:#ede4d0;--bg3:#e4d9c2;--card:#faf5eb;
+  --border:#c8b89a;--border-soft:#ddd0b8;
+  --gold:#8a5e2a;--gold2:#6b4318;--gold-light:#a07840;
+  --text:#2e1f0a;--text-dim:#7a6248;--text-faint:#a89070;
+  --green-soft:#d8eddc;--green:#3a7a4a;
+  --sidebar-w:240px;--bottomnav-h:60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,serif;font-size:15px;}
+
+/* ── LAYOUT ── */
+.app{display:flex;height:100vh;height:100dvh;overflow:hidden;}
+
+/* ── SIDEBAR (desktop) ── */
+.sidebar{
+  width:var(--sidebar-w);background:var(--bg2);
+  border-right:1px solid var(--border-soft);
+  display:flex;flex-direction:column;flex-shrink:0;
+  overflow-y:auto;box-shadow:2px 0 10px rgba(120,80,30,.07);
+}
+.logo{padding:22px 18px 18px;border-bottom:1px solid var(--border-soft);text-align:center;}
+.logo-sym{font-size:18px;color:var(--gold);}
+.logo-name{font-family:'Cinzel',serif;font-size:16px;color:var(--gold2);letter-spacing:3px;}
+.logo-tag{font-size:10.5px;color:var(--text-faint);font-style:italic;margin-top:2px;}
+.nav{flex:1;padding:10px 0;}
+.nav-sec{padding:11px 16px 3px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-faint);font-family:'Cinzel',serif;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:var(--text-dim);font-size:13px;transition:all .18s;border-left:3px solid transparent;}
+.nav-item:hover{color:var(--gold2);background:rgba(138,94,42,.07);}
+.nav-item.active{color:var(--gold2);background:rgba(138,94,42,.11);border-left-color:var(--gold);}
+.nav-icon{width:18px;text-align:center;font-size:14px;}
+.sidebar-verse{padding:12px 14px;border-top:1px solid var(--border-soft);font-style:italic;font-size:11px;color:var(--text-faint);text-align:center;line-height:1.6;}
+
+/* ── MAIN PANEL ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border-soft);padding:11px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:40;}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--text);}
+.top-date{font-size:11.5px;color:var(--text-faint);font-style:italic;}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+/* ── VIEWS ── */
+.view{display:none;padding:20px 22px 32px;animation:fadeIn .25s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--bottomnav-h);background:var(--bg2);border-top:1px solid var(--border-soft);z-index:100;padding-bottom:env(safe-area-inset-bottom);}
+.bottom-nav-inner{display:flex;height:100%;}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text-faint);font-size:9.5px;font-family:'Cinzel',serif;letter-spacing:.5px;transition:color .15s;border:none;background:none;padding:0;}
+.bnav-item.active{color:var(--gold);}
+.bnav-icon{font-size:19px;line-height:1;}
+.mobile-menu-overlay{display:none;position:fixed;inset:0;background:rgba(50,35,15,.5);backdrop-filter:blur(2px);z-index:90;}
+.mobile-menu-overlay.open{display:block;}
+.mobile-drawer{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--bg2);z-index:95;transform:translateX(-100%);transition:transform .28s ease;overflow-y:auto;display:flex;flex-direction:column;}
+.mobile-drawer.open{transform:translateX(0);}
+.drawer-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:22px;color:var(--text-dim);cursor:pointer;}
+
+/* ── COMMON ── */
+.section-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--text);margin-bottom:16px;}
+.hrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.hrow .section-title{margin-bottom:0;}
+
+.card{background:var(--card);border:1px solid var(--border-soft);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 5px rgba(120,80,30,.05);}
+.card-header{padding:12px 18px 10px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;}
+.card-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+.card-link{font-size:11.5px;color:var(--text-faint);cursor:pointer;transition:color .15s;}
+.card-link:hover{color:var(--gold);}
+.card-body{padding:16px 18px;}
+
+.btn{background:var(--gold);color:#fff;border:none;border-radius:6px;padding:8px 16px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.btn:active{background:var(--gold2);}
+.btn-ghost{background:transparent;color:var(--gold);border:1px solid var(--border);border-radius:6px;padding:7px 13px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-ghost:active{background:rgba(138,94,42,.08);}
+.btn-sm{padding:5px 11px;font-size:9.5px;}
+.btn-danger{background:#c0392b;color:#fff;border:none;border-radius:6px;padding:7px 13px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:pointer;}
+
+.lbl{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);font-family:'Cinzel',serif;margin-bottom:5px;margin-top:13px;}
+.inp,.txa,.sel{width:100%;background:#fff;border:1px solid var(--border-soft);border-radius:7px;padding:10px 13px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.inp:focus,.txa:focus,.sel:focus{border-color:var(--gold);}
+.txa{resize:vertical;min-height:72px;line-height:1.6;}
+.sel option{background:#fff;}
+
+.pill{background:#fff;border:1px solid var(--border-soft);border-radius:20px;padding:4px 13px;font-size:12px;color:var(--text-dim);cursor:pointer;transition:all .18s;white-space:nowrap;}
+.pill.active,.pill:active{border-color:var(--gold);color:var(--gold2);background:rgba(138,94,42,.09);}
+.filter-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
+
+.badge{display:inline-block;background:var(--bg3);border:1px solid var(--border-soft);border-radius:3px;padding:2px 7px;font-size:9.5px;color:var(--text-dim);font-family:'Cinzel',serif;white-space:nowrap;}
+
+/* ── MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(50,35,15,.45);backdrop-filter:blur(3px);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:24px 20px 32px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;animation:slideUp .28s ease;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--text);margin-bottom:3px;}
+.modal-sub{font-size:12.5px;color:var(--text-faint);font-style:italic;margin-bottom:14px;}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);}
+
+/* ── DASHBOARD ── */
+.vod-card{background:linear-gradient(135deg,#fdf8ef,#f0e8d2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(120,80,30,.08);}
+.vod-card::before{content:'"';position:absolute;top:-8px;left:12px;font-family:'Cormorant Garamond',serif;font-size:100px;color:rgba(138,94,42,.07);line-height:1;pointer-events:none;}
+.vod-lbl{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:9px;}
+.vod-text{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;font-weight:300;color:var(--text);line-height:1.7;margin-bottom:7px;}
+.vod-ref{font-size:12.5px;color:var(--gold2);font-weight:500;}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.stat-card{background:var(--card);border:1px solid var(--border-soft);border-radius:9px;padding:14px 10px;text-align:center;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--gold2);font-weight:300;line-height:1;}
+.stat-lbl{font-size:10.5px;color:var(--text-dim);margin-top:3px;line-height:1.3;}
+
+/* ── PRAYER ITEMS ── */
+.prayer-card{background:var(--card);border:1px solid var(--border-soft);border-radius:9px;padding:13px 16px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;box-shadow:0 1px 4px rgba(120,80,30,.04);}
+.pc-check{width:22px;height:22px;border:1.5px solid var(--border);border-radius:50%;cursor:pointer;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.pc-check.answered{background:var(--green-soft);border-color:var(--green);}
+.pc-check.answered::after{content:'✓';font-size:12px;color:var(--green);}
+.pc-body{flex:1;min-width:0;}
+.pc-title{font-size:14.5px;color:var(--text);line-height:1.4;}
+.pc-title.done{text-decoration:line-through;color:var(--text-faint);}
+.pc-meta{font-size:11px;color:var(--text-faint);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap;}
+
+/* ── DAILY LOG ── */
+.date-nav{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.date-btn{background:var(--card);border:1px solid var(--border-soft);border-radius:7px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text-dim);flex-shrink:0;}
+.date-lbl{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--text);flex:1;text-align:center;}
+.acts-block{background:#fff;border:1px solid var(--border-soft);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+.acts-hdr{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:2px;}
+.acts-sub{font-size:11.5px;color:var(--text-faint);font-style:italic;margin-bottom:8px;}
+.acts-ta{width:100%;background:transparent;border:none;resize:none;color:var(--text);font-family:'Crimson Pro',serif;font-size:14.5px;line-height:1.7;outline:none;min-height:60px;}
+.acts-ta::placeholder{color:var(--text-faint);font-style:italic;}
+
+/* ── SUPPLICATION TABLE ── */
+.supp-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.supp-table th{background:var(--bg3);padding:8px 11px;font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);text-align:left;border-bottom:1px solid var(--border);}
+.supp-table td{padding:8px 11px;border-bottom:1px solid var(--border-soft);font-size:13.5px;}
+.supp-table tr:last-child td{border-bottom:none;}
+.supp-table input{background:transparent;border:none;outline:none;color:var(--text);font-family:'Crimson Pro',serif;font-size:13.5px;width:100%;}
+
+/* ── WEEKLY REVIEW ── */
+.rv-q{margin-bottom:16px;}
+.rv-lbl{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+.rv-prompt{font-size:11.5px;color:var(--text-faint);font-style:italic;margin-bottom:6px;}
+
+/* ── VERSE CARDS ── */
+.verse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:13px;}
+.verse-card{background:var(--card);border:1px solid var(--border-soft);border-radius:11px;padding:18px 20px;position:relative;overflow:hidden;box-shadow:0 1px 5px rgba(120,80,30,.05);}
+.verse-card::before{content:'"';position:absolute;top:-6px;right:10px;font-family:'Cormorant Garamond',serif;font-size:70px;color:rgba(138,94,42,.06);line-height:1;pointer-events:none;}
+.verse-ref-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.verse-ref{font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:1px;color:var(--gold);}
+.verse-del{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:16px;line-height:1;padding:0 2px;}
+.verse-text{font-family:'Cormorant Garamond',serif;font-size:16.5px;font-style:italic;font-weight:300;color:var(--text);line-height:1.7;margin-bottom:10px;transition:all .2s;}
+.verse-text.hidden{color:transparent;background:var(--bg3);border-radius:5px;cursor:pointer;user-select:none;}
+.verse-footer{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.verse-trans{font-size:11px;color:var(--text-faint);}
+.verse-topic{background:rgba(138,94,42,.08);border:1px solid var(--border-soft);border-radius:10px;padding:2px 9px;font-size:10px;color:var(--gold2);font-family:'Cinzel',serif;}
+.status-row{display:flex;gap:5px;flex-wrap:wrap;}
+.s-btn{border:1px solid var(--border-soft);background:#fff;border-radius:5px;padding:4px 9px;font-size:10px;cursor:pointer;transition:all .18s;font-family:'Cinzel',serif;color:var(--text-dim);}
+.s-btn.learning{background:rgba(201,180,80,.12);border-color:#b8960a;color:#7a6000;}
+.s-btn.reviewing{background:rgba(80,120,201,.1);border-color:#7090c8;color:#3858a0;}
+.s-btn.mastered{background:var(--green-soft);border-color:var(--green);color:var(--green);}
+.verse-practice{margin-left:auto;background:none;border:1px dashed var(--border-soft);border-radius:5px;padding:4px 9px;font-size:10px;cursor:pointer;color:var(--text-faint);font-family:'Cinzel',serif;}
+.prog-bar-wrap{background:var(--bg3);border-radius:20px;height:7px;overflow:hidden;margin-top:6px;}
+.prog-bar{background:linear-gradient(90deg,var(--gold),var(--gold-light));height:100%;border-radius:20px;transition:width .5s ease;}
+
+/* ── SCHEDULE ── */
+.week-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.week-nav-btn{background:var(--card);border:1px solid var(--border-soft);border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text-dim);}
+.week-lbl{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:var(--text);flex:1;text-align:center;}
+.sched-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.sday{background:var(--card);border:1px solid var(--border-soft);border-radius:8px;overflow:hidden;min-height:160px;}
+.sday.today{border-color:var(--gold);}
+.sday-hdr{padding:8px 6px;border-bottom:1px solid var(--border-soft);text-align:center;}
+.sday-name{font-family:'Cinzel',serif;font-size:8px;letter-spacing:1px;color:var(--text-faint);text-transform:uppercase;}
+.sday-num{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--text);line-height:1.1;}
+.today .sday-num{color:var(--gold2);}
+.sday-body{padding:6px;display:flex;flex-direction:column;gap:4px;}
+.sit{background:#fff;border-radius:4px;padding:4px 6px;font-size:10px;color:var(--text-dim);border-left:2px solid var(--border-soft);cursor:pointer;}
+.sit.prayer{border-left-color:rgba(138,94,42,.5);}
+.sit.study{border-left-color:rgba(58,122,74,.5);}
+.sit.done{opacity:.45;text-decoration:line-through;}
+.sit-time{font-size:9px;color:var(--text-faint);}
+.sday-add{margin:0 6px 6px;background:none;border:1px dashed var(--border-soft);border-radius:4px;width:calc(100% - 12px);font-size:10px;color:var(--text-faint);cursor:pointer;padding:3px;font-family:'Crimson Pro',serif;}
+
+/* ── DISCIPLINE GRID ── */
+.disc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:8px;}
+.disc-item{background:#fff;border:1px solid var(--border-soft);border-radius:7px;padding:9px 12px;font-size:13px;color:var(--text-dim);display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .18s;}
+.disc-item.checked{background:rgba(138,94,42,.09);border-color:var(--gold);color:var(--gold2);}
+.disc-chk{width:14px;height:14px;border:1px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;}
+.disc-item.checked .disc-chk{background:var(--gold);border-color:var(--gold);}
+.disc-item.checked .disc-chk::after{content:'✓';font-size:9px;color:#fff;}
+
+/* ── DETAIL TABS ── */
+.dtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.dtab{background:#fff;border:1px solid var(--border-soft);border-radius:6px;padding:5px 12px;font-size:11px;color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;letter-spacing:.3px;}
+.dtab.active{background:rgba(138,94,42,.1);border-color:var(--gold);color:var(--gold2);}
+.ds-lbl{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;margin-top:13px;}
+.ds-sub{font-size:11.5px;color:var(--text-faint);font-style:italic;margin-bottom:6px;}
+
+/* ── AI STUDY ── */
+.study-wrap{display:flex;flex-direction:column;gap:14px;height:calc(100vh - 120px);height:calc(100dvh - 120px);}
+.notes-panel,.ai-panel{background:var(--card);border:1px solid var(--border-soft);border-radius:10px;display:flex;flex-direction:column;overflow:hidden;flex:1;}
+.panel-hdr{padding:11px 16px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.panel-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+.notes-ta{flex:1;background:transparent;border:none;padding:14px 16px;color:var(--text);font-family:'Crimson Pro',serif;font-size:14.5px;line-height:1.8;resize:none;outline:none;}
+.notes-ta::placeholder{color:var(--text-faint);font-style:italic;}
+.ai-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:11px;}
+.ai-welcome{text-align:center;padding:18px 12px;color:var(--text-faint);}
+.ai-welcome-icon{font-size:24px;color:var(--gold);margin-bottom:8px;}
+.ai-welcome-text{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--text-dim);line-height:1.6;}
+.sugg-wrap{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;}
+.sugg{background:#fff;border:1px solid var(--border-soft);border-radius:14px;padding:4px 11px;font-size:11.5px;color:var(--text-dim);cursor:pointer;transition:all .18s;}
+.sugg:active{border-color:var(--gold);color:var(--gold2);}
+.msg{display:flex;gap:8px;align-items:flex-start;}
+.msg.user{flex-direction:row-reverse;}
+.msg-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:2px;}
+.msg.ai .msg-av{background:var(--bg3);border:1px solid var(--border);color:var(--gold);}
+.msg.user .msg-av{background:var(--gold);color:#fff;}
+.msg-bubble{max-width:84%;padding:9px 13px;border-radius:10px;font-size:13.5px;line-height:1.6;}
+.msg.ai .msg-bubble{background:#fff;border:1px solid var(--border-soft);color:var(--text);border-top-left-radius:2px;}
+.msg.user .msg-bubble{background:rgba(138,94,42,.1);border:1px solid var(--border-soft);color:var(--text);border-top-right-radius:2px;}
+.ai-input-wrap{padding:10px 12px;border-top:1px solid var(--border-soft);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
+.ai-inp{flex:1;background:#fff;border:1px solid var(--border-soft);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Crimson Pro',serif;font-size:14px;resize:none;outline:none;max-height:90px;}
+.ai-inp:focus{border-color:var(--gold);}
+.ai-send{background:var(--gold);border:none;border-radius:7px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0;}
+.ai-send:disabled{background:var(--border-soft);}
+.typing-dots{display:flex;gap:4px;padding:2px 0;}
+.typing-dot{width:5px;height:5px;background:var(--text-faint);border-radius:50%;animation:bounce 1.2s infinite;}
+.typing-dot:nth-child(2){animation-delay:.2s;}
+.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-4px);opacity:1}}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--gold2);color:#fff;padding:10px 18px;border-radius:20px;font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.5px;z-index:300;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;}
+.toast.show{opacity:1;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .main{width:100%;}
+  .content{padding-bottom:var(--bottomnav-h);}
+  .view{padding:16px 16px 20px;}
+  .bottom-nav{display:block;}
+  .stat-grid{grid-template-columns:repeat(3,1fr);gap:8px;}
+  .sched-grid{grid-template-columns:repeat(2,1fr);}
+  .verse-grid{grid-template-columns:1fr;}
+  .study-wrap{height:auto;}
+  .notes-panel{min-height:220px;}
+  .ai-panel{min-height:340px;}
+  .disc-grid{grid-template-columns:1fr 1fr;}
+}
+@media(min-width:900px){
+  .study-wrap{flex-direction:row;}
+}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--border-soft);border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ── SIDEBAR (desktop) ── -->
+<nav class="sidebar" id="desktopSidebar">
+  <div class="logo">
+    <div class="logo-sym">✦</div>
+    <div class="logo-name">Abide</div>
+    <div class="logo-tag">90-day prayer planner</div>
+  </div>
+  <div class="nav" id="desktopNav"></div>
+  <div class="sidebar-verse">"Devote yourselves to prayer,<br>being watchful and thankful."<br>— Colossians 4:2</div>
+</nav>
+
+<!-- ── MOBILE DRAWER ── -->
+<div class="mobile-menu-overlay" id="mobileOverlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobileDrawer">
+  <button class="drawer-close" onclick="closeDrawer()">×</button>
+  <div class="logo" style="margin-top:10px;">
+    <div class="logo-sym">✦</div>
+    <div class="logo-name">Abide</div>
+    <div class="logo-tag">90-day prayer planner</div>
+  </div>
+  <div class="nav" id="drawerNav"></div>
+  <div class="sidebar-verse">"Devote yourselves to prayer,<br>being watchful and thankful."<br>— Colossians 4:2</div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="pageTitle">Dashboard</div>
+    <div class="top-date" id="topDate"></div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dashboard">
+      <div class="vod-card">
+        <div class="vod-lbl">✦ Verse of the Day</div>
+        <div class="vod-text">"Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God."</div>
+        <div class="vod-ref">Philippians 4:6 · ESV</div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" id="statActive">0</div><div class="stat-lbl">Active Requests</div></div>
+        <div class="stat-card"><div class="stat-num" id="statAnswered">0</div><div class="stat-lbl">Answered</div></div>
+        <div class="stat-card"><div class="stat-num" id="statDay">1</div><div class="stat-lbl">Day of 90</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Today's Prayer Focus</div><div class="card-link" onclick="nav('dailylog')">Open log →</div></div>
+        <div class="card-body" id="dashFocus"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">ACTS Prayer Method</div></div>
+        <div class="card-body" style="font-size:13.5px;line-height:2;color:var(--text-dim);">
+          🙌 <strong style="color:var(--gold2)">A</strong>doration &nbsp;·&nbsp; 🤍 <strong style="color:var(--gold2)">C</strong>onfession<br>
+          🌿 <strong style="color:var(--gold2)">T</strong>hanksgiving &nbsp;·&nbsp; 🙏 <strong style="color:var(--gold2)">S</strong>upplication
+          <div style="margin-top:10px;"><button class="btn btn-sm" onclick="nav('dailylog')">Open Today's Log</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRAYER VISION -->
+    <div class="view" id="view-vision">
+      <div class="hrow"><div class="section-title">Prayer Vision</div><button class="btn btn-sm" onclick="saveVision()">Save</button></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">My Prayer Vision</div></div>
+        <div class="card-body">
+          <label class="lbl">What I am building in my prayer life this year</label>
+          <textarea class="txa" id="visionText" style="min-height:90px;" placeholder="Write your prayer vision for this season…"></textarea>
+          <label class="lbl" style="margin-top:16px;">Spiritual Disciplines to Strengthen</label>
+          <div class="disc-grid" id="discGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPLICATION STRATEGY -->
+    <div class="view" id="view-supplication">
+      <div class="section-title" style="margin-bottom:16px;">Supplication Strategy</div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Daily Topics</div><div class="card-link" style="font-size:11px;color:var(--text-faint);">Pray for these every day</div></div>
+        <div class="card-body" style="padding-bottom:12px;overflow-x:auto;">
+          <table class="supp-table"><thead><tr><th>#</th><th>Topic</th><th>Scripture / Notes</th></tr></thead><tbody id="dailySuppBody"></tbody></table>
+          <button class="btn-ghost btn-sm" style="margin-top:10px;" onclick="addDailySupp()">+ Add Topic</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Weekly Topics</div><div class="card-link" style="font-size:11px;color:var(--text-faint);">One focus per day</div></div>
+        <div class="card-body" style="padding-bottom:12px;overflow-x:auto;">
+          <table class="supp-table"><thead><tr><th>Day</th><th>Topic</th><th>Notes</th></tr></thead><tbody id="weeklySuppBody"></tbody></table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Detail Sheets</div></div>
+        <div class="card-body">
+          <div class="dtabs" id="detailTabs"></div>
+          <div id="detailContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRAYER PLANNER -->
+    <div class="view" id="view-schedule">
+      <div class="week-hdr">
+        <div class="section-title" style="margin-bottom:0;">Prayer Planner</div>
+        <button class="week-nav-btn" onclick="changeWeek(-1)">‹</button>
+        <div class="week-lbl" id="weekLbl"></div>
+        <button class="week-nav-btn" onclick="changeWeek(1)">›</button>
+      </div>
+      <div class="sched-grid" id="schedGrid"></div>
+    </div>
+
+    <!-- DAILY LOG -->
+    <div class="view" id="view-dailylog">
+      <div class="date-nav">
+        <div class="date-btn" onclick="changeLogDay(-1)">‹</div>
+        <div class="date-lbl" id="logDateLbl"></div>
+        <div class="date-btn" onclick="changeLogDay(1)">›</div>
+        <button class="btn-ghost btn-sm" onclick="saveLog()" style="margin-left:8px;">Save</button>
+      </div>
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-header"><div class="card-title">Scripture Reference</div></div>
+        <div class="card-body" style="padding:10px 14px;">
+          <input class="inp" id="logScripture" placeholder="e.g. Psalm 46:1–3" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;"/>
+        </div>
+      </div>
+      <div class="acts-block">
+        <div class="acts-hdr">A — Adoration</div><div class="acts-sub">Praise God for who He is</div>
+        <textarea class="acts-ta" id="actA" placeholder="Lord, I praise You because…"></textarea>
+      </div>
+      <div class="acts-block">
+        <div class="acts-hdr">C — Confession</div><div class="acts-sub">Honestly acknowledge sin and shortcomings</div>
+        <textarea class="acts-ta" id="actC" placeholder="I confess…"></textarea>
+      </div>
+      <div class="acts-block">
+        <div class="acts-hdr">T — Thanksgiving</div><div class="acts-sub">Give thanks for specific blessings</div>
+        <textarea class="acts-ta" id="actT" placeholder="I'm grateful for…"></textarea>
+      </div>
+      <div class="acts-block">
+        <div class="acts-hdr">S — Supplication</div><div class="acts-sub">Bring your requests before God</div>
+        <textarea class="acts-ta" id="actS" placeholder="Lord, I ask for…"></textarea>
+        <div style="margin-top:8px;font-size:11px;color:var(--text-faint);">Weekly topic: <span id="logWeeklyTopic" style="color:var(--text-dim);font-style:italic;"></span></div>
+      </div>
+      <div class="acts-block">
+        <div class="acts-hdr">Insight / Revelation</div><div class="acts-sub">What is the Spirit revealing?</div>
+        <textarea class="acts-ta" id="actInsight" placeholder="What stood out to me today…"></textarea>
+      </div>
+      <div class="acts-block">
+        <div class="acts-hdr">Personal Reflections</div>
+        <textarea class="acts-ta" id="actReflect" placeholder="Additional thoughts…"></textarea>
+      </div>
+    </div>
+
+    <!-- WEEKLY REVIEW -->
+    <div class="view" id="view-weekly">
+      <div class="hrow">
+        <div class="section-title">Weekly Review</div>
+        <button class="btn btn-sm" onclick="saveReview()">Save</button>
+      </div>
+      <div class="rv-q"><div class="rv-lbl">Scripture Takeaway</div><div class="rv-prompt">Most notable thing God taught me — any verse to memorize?</div><textarea class="txa" id="rv1" placeholder="This week God showed me…"></textarea></div>
+      <div class="rv-q"><div class="rv-lbl">Theme in Confessions</div><div class="rv-prompt">Is there a pattern? What heart changes do I need?</div><textarea class="txa" id="rv2" placeholder="I noticed a pattern of…"></textarea></div>
+      <div class="rv-q"><div class="rv-lbl">Theme in Thankfulness</div><div class="rv-prompt">What recurring theme in my gratitude this week?</div><textarea class="txa" id="rv3" placeholder="I kept giving thanks for…"></textarea></div>
+      <div class="rv-q"><div class="rv-lbl">Topics for Next Week</div><div class="rv-prompt">Recurring prayers to add to focused prayer topics?</div><textarea class="txa" id="rv4" placeholder="I want to add…"></textarea></div>
+      <div class="rv-q"><div class="rv-lbl">Heart Check</div><div class="rv-prompt">Do God's answers align with my desires?</div><textarea class="txa" id="rv5" placeholder="Reflecting on answered prayers…"></textarea></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Prayers Answered This Week</div><button class="btn-ghost btn-sm" onclick="addAnsweredRow()">+ Add</button></div>
+        <div style="overflow-x:auto;">
+          <table class="supp-table" style="margin-top:0;"><thead><tr><th>Prayer</th><th>How God Answered</th></tr></thead><tbody id="answeredBody">
+            <tr><td><input placeholder="Prayer…"/></td><td><input placeholder="God's answer…"/></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRAYER REQUESTS -->
+    <div class="view" id="view-prayers">
+      <div class="hrow"><div class="section-title">Prayer Requests</div><button class="btn btn-sm" onclick="openModal('addPrayerModal')">+ Add</button></div>
+      <div class="filter-bar" id="prayerFilterBar"></div>
+      <div id="prayerList"></div>
+    </div>
+
+    <!-- BIBLE STUDY -->
+    <div class="view" id="view-study">
+      <div class="hrow"><div class="section-title">Bible Study</div><button class="btn-ghost btn-sm" onclick="saveNote()">Save Note</button></div>
+      <div class="study-wrap">
+        <div class="notes-panel">
+          <div class="panel-hdr"><div class="panel-title">✦ Study Notes</div></div>
+          <div style="padding:8px 12px;border-bottom:1px solid var(--border-soft);">
+            <input class="inp" id="passageInp" placeholder="Passage — e.g. John 15:1–11" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;"/>
+          </div>
+          <textarea class="notes-ta" id="studyNotes" placeholder="Write your reflections…&#10;&#10;What does this reveal about God?&#10;What does it ask of me?&#10;How can I apply this today?"></textarea>
+          <div style="padding:8px 12px;border-top:1px solid var(--border-soft);">
+            <button class="btn-ghost btn-sm" onclick="sendPassageToAI()">Ask AI about this →</button>
+          </div>
+        </div>
+        <div class="ai-panel">
+          <div class="panel-hdr"><div class="panel-title">✦ AI Study Assistant</div><div style="font-size:10.5px;color:var(--text-faint);font-style:italic;">Powered by Claude</div></div>
+          <div class="ai-msgs" id="aiMsgs">
+            <div class="ai-welcome">
+              <div class="ai-welcome-icon">✦</div>
+              <div class="ai-welcome-text">Ask me about Scripture — context, meaning, application, or cross-references.</div>
+              <div class="sugg-wrap">
+                <div class="sugg" onclick="askAI('What is the historical context of Psalm 23?')">Psalm 23 context</div>
+                <div class="sugg" onclick="askAI('Explain grace in the New Testament')">Grace in the NT</div>
+                <div class="sugg" onclick="askAI('What does John 15 teach about abiding in Christ?')">John 15 — Abiding</div>
+                <div class="sugg" onclick="askAI('Key themes in Romans')">Romans themes</div>
+              </div>
+            </div>
+          </div>
+          <div class="ai-input-wrap">
+            <textarea class="ai-inp" id="aiInp" placeholder="Ask about a verse or passage…" rows="1" onkeydown="handleAiKey(event)"></textarea>
+            <button class="ai-send" id="aiSendBtn" onclick="sendAiMsg()">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMORY VERSES -->
+    <div class="view" id="view-verses">
+      <div class="hrow"><div class="section-title">Memory Verses</div><button class="btn btn-sm" onclick="openModal('addVerseModal')">+ Add Verse</button></div>
+      <div style="font-size:13px;color:var(--text-faint);font-style:italic;margin-bottom:16px;">"I have stored up your word in my heart, that I might not sin against you." — Psalm 119:11</div>
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-body" style="padding:12px 16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div class="card-title">Memorization Progress</div>
+            <div style="font-size:11.5px;color:var(--text-dim);" id="verseProg">0 of 0 mastered</div>
+          </div>
+          <div class="prog-bar-wrap"><div class="prog-bar" id="verseProgBar" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="filter-bar" id="verseFilterBar"></div>
+      <div class="verse-grid" id="verseList"></div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ── BOTTOM NAV (mobile) ── -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="bnav-item active" id="bn-dashboard" onclick="nav('dashboard')"><span class="bnav-icon">⌂</span>Home</button>
+    <button class="bnav-item" id="bn-dailylog" onclick="nav('dailylog')"><span class="bnav-icon">📖</span>Log</button>
+    <button class="bnav-item" id="bn-prayers" onclick="nav('prayers')"><span class="bnav-icon">🙏</span>Prayers</button>
+    <button class="bnav-item" id="bn-verses" onclick="nav('verses')"><span class="bnav-icon">🕊</span>Verses</button>
+    <button class="bnav-item" id="bn-more" onclick="openDrawer()"><span class="bnav-icon">☰</span>More</button>
+  </div>
+</nav>
+
+</div><!-- /app -->
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<!-- ── MODALS ── -->
+<div class="overlay" id="addPrayerModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">New Prayer Request</div>
+    <div class="modal-sub">Add a specific request to bring before the Lord</div>
+    <label class="lbl">Request</label>
+    <input class="inp" id="newPrayerText" placeholder="What would you like to pray for?"/>
+    <label class="lbl">Category</label>
+    <select class="sel" id="newPrayerCat">
+      <option>Personal</option><option>Family</option><option>Church</option>
+      <option>Community</option><option>Missions</option><option>Gratitude</option>
+    </select>
+    <label class="lbl">Notes / Scripture (optional)</label>
+    <textarea class="txa" id="newPrayerNotes" placeholder="Context or relevant verse…"></textarea>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('addPrayerModal')">Cancel</button>
+      <button class="btn" onclick="addPrayer()">Add Request</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="addVerseModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Add Memory Verse</div>
+    <div class="modal-sub">Store a verse to memorize and review</div>
+    <label class="lbl">Reference</label>
+    <input class="inp" id="newVerseRef" placeholder="e.g. John 3:16"/>
+    <label class="lbl">Verse Text</label>
+    <textarea class="txa" id="newVerseText" style="min-height:90px;" placeholder="Type or paste the full verse…"></textarea>
+    <label class="lbl">Translation</label>
+    <input class="inp" id="newVerseTrans" placeholder="e.g. ESV, NIV, NKJV"/>
+    <label class="lbl">Topic / Theme</label>
+    <select class="sel" id="newVerseTopic">
+      <option>Faith</option><option>Prayer</option><option>Identity</option>
+      <option>Strength</option><option>Love</option><option>Peace</option>
+      <option>Purpose</option><option>Gratitude</option><option>Other</option>
+    </select>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('addVerseModal')">Cancel</button>
+      <button class="btn" onclick="addVerse()">Add Verse</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// STORAGE — auto-persist all state
+// ═══════════════════════════════════════
+const STORE_KEY = 'abide_v1';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return null;
+}
+
+function saveState() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch(e) {}
+}
+
+// Default clean state
+const defaultState = () => ({
+  startDate: new Date().toISOString().split('T')[0],
+  prayers: [],
+  vision: { text: '', disciplines: [] },
+  dailySupp: [{topic:'',notes:''},{topic:'',notes:''},{topic:'',notes:''},{topic:'',notes:''},{topic:'',notes:''}],
+  weeklySupp: {SUNDAY:'',MONDAY:'',TUESDAY:'',WEDNESDAY:'',THURSDAY:'',FRIDAY:'',SATURDAY:''},
+  detailSheets: {},
+  logs: {},
+  weekOffset: 0,
+  review: {},
+  verses: [],
+  prayerFilter: 'all',
+  verseFilter: 'All',
+  currentDetailTab: null,
+  aiHistory: [],
+});
+
+let S = loadState() || defaultState();
+// logDate is always today on open (don't persist)
+let logDate = new Date();
+
+// Auto-save wrapper
+function mut(fn) { fn(); saveState(); }
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+const NAV_ITEMS = [
+  { id:'dashboard',  icon:'⌂',  label:'Dashboard',          section:'Overview' },
+  { id:'vision',     icon:'🌿', label:'Prayer Vision',       section:'Section I — Strategy' },
+  { id:'supplication',icon:'📋',label:'Supplication Strategy',section:null },
+  { id:'schedule',   icon:'📅', label:'Prayer Planner',      section:null },
+  { id:'dailylog',   icon:'📖', label:'Daily Prayer Log',    section:'Section II — Daily Practice' },
+  { id:'weekly',     icon:'🗂', label:'Weekly Review',       section:null },
+  { id:'prayers',    icon:'🙏', label:'Prayer Requests',     section:null },
+  { id:'study',      icon:'✦',  label:'AI Study Assistant',  section:'Bible Study' },
+  { id:'verses',     icon:'🕊', label:'Memory Verses',       section:null },
+];
+
+const TITLES = Object.fromEntries(NAV_ITEMS.map(n=>[n.id, n.label]));
+let currentView = 'dashboard';
+
+function buildNav(containerId) {
+  const el = document.getElementById(containerId);
+  let html = '';
+  let lastSec = null;
+  NAV_ITEMS.forEach(item => {
+    if (item.section && item.section !== lastSec) {
+      html += `<div class="nav-sec">${item.section}</div>`;
+      lastSec = item.section;
+    }
+    html += `<div class="nav-item ${item.id===currentView?'active':''}" data-view="${item.id}" onclick="nav('${item.id}');closeDrawer()">
+      <span class="nav-icon">${item.icon}</span>${item.label}
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+function nav(viewId) {
+  currentView = viewId;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const el = document.getElementById('view-'+viewId);
+  if (el) el.classList.add('active');
+  document.getElementById('pageTitle').textContent = TITLES[viewId] || viewId;
+  buildNav('desktopNav');
+  buildNav('drawerNav');
+  // Bottom nav highlight
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  const bnav = document.getElementById('bn-'+viewId);
+  if (bnav) bnav.classList.add('active');
+  // Run view-specific setup
+  if (viewId==='schedule') renderSchedule();
+  if (viewId==='dailylog') renderLogDate();
+  if (viewId==='prayers') renderPrayers();
+  if (viewId==='verses') renderVerses();
+  if (viewId==='supplication') initSupplication();
+  if (viewId==='vision') loadVision();
+  if (viewId==='dashboard') updateDashboard();
+}
+
+function openDrawer() {
+  document.getElementById('mobileDrawer').classList.add('open');
+  document.getElementById('mobileOverlay').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('mobileDrawer').classList.remove('open');
+  document.getElementById('mobileOverlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  const now = new Date();
+  document.getElementById('topDate').textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+  // Day of 90
+  const start = new Date(S.startDate);
+  const dayNum = Math.max(1, Math.min(90, Math.floor((now - start)/(86400000)) + 1));
+  document.getElementById('statDay').textContent = dayNum;
+
+  buildNav('desktopNav');
+  buildNav('drawerNav');
+  updateDashboard();
+  initSupplication();
+  loadVision();
+  renderPrayers();
+  renderVerses();
+
+  // PWA service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  }
+});
+
+// ═══════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════
+function updateDashboard() {
+  document.getElementById('statActive').textContent = S.prayers.filter(p=>!p.answered).length;
+  document.getElementById('statAnswered').textContent = S.prayers.filter(p=>p.answered).length;
+
+  const today = new Date();
+  const start = new Date(S.startDate);
+  const dayNum = Math.max(1, Math.min(90, Math.floor((today-start)/86400000)+1));
+  document.getElementById('statDay').textContent = dayNum;
+
+  const wday = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'][today.getDay()];
+  const topics = [
+    ...S.dailySupp.filter(t=>t.topic),
+    ...(S.weeklySupp[wday] ? [{topic: S.weeklySupp[wday]}] : [])
+  ];
+  const el = document.getElementById('dashFocus');
+  if (!topics.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--text-faint);font-style:italic;">No topics set yet — visit Supplication Strategy to add daily prayer focus.</div>';
+  } else {
+    el.innerHTML = topics.slice(0,5).map(t=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-soft);">
+        <div style="width:18px;height:18px;border:1.5px solid var(--border);border-radius:50%;cursor:pointer;flex-shrink:0;" onclick="this.style.background='var(--green-soft)';this.style.borderColor='var(--green)';"></div>
+        <div style="font-size:14px;color:var(--text);">${t.topic}</div>
+      </div>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════
+// VISION
+// ═══════════════════════════════════════
+const DISCIPLINES = ['Consistency','Focus','Scripture knowledge','Listening','Gratitude','Bold intercession'];
+
+function loadVision() {
+  document.getElementById('visionText').value = S.vision.text || '';
+  const grid = document.getElementById('discGrid');
+  grid.innerHTML = DISCIPLINES.map(d=>`
+    <div class="disc-item ${S.vision.disciplines.includes(d)?'checked':''}" onclick="toggleDisc(this,'${d}')">
+      <div class="disc-chk"></div>${d}
+    </div>`).join('');
+}
+
+function toggleDisc(el, d) {
+  el.classList.toggle('checked');
+  mut(()=>{
+    if (el.classList.contains('checked')) { if(!S.vision.disciplines.includes(d)) S.vision.disciplines.push(d); }
+    else S.vision.disciplines = S.vision.disciplines.filter(x=>x!==d);
+  });
+}
+
+function saveVision() {
+  mut(()=>{ S.vision.text = document.getElementById('visionText').value; });
+  toast('Prayer vision saved ✦');
+}
+
+// ═══════════════════════════════════════
+// SUPPLICATION
+// ═══════════════════════════════════════
+const WEEKDAYS = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+
+function initSupplication() {
+  renderDailySupp();
+  renderWeeklySupp();
+  renderDetailTabs();
+}
+
+function renderDailySupp() {
+  document.getElementById('dailySuppBody').innerHTML = S.dailySupp.map((s,i)=>`
+    <tr>
+      <td style="color:var(--text-faint);font-family:'Cinzel',serif;font-size:10px;">${i+1}</td>
+      <td><input value="${esc(s.topic)}" placeholder="Topic…" onchange="mut(()=>S.dailySupp[${i}].topic=this.value);renderDetailTabs()"/></td>
+      <td><input value="${esc(s.notes)}" placeholder="Scripture…" onchange="mut(()=>S.dailySupp[${i}].notes=this.value)"/></td>
+    </tr>`).join('');
+}
+
+function addDailySupp() { mut(()=>S.dailySupp.push({topic:'',notes:''})); renderDailySupp(); renderDetailTabs(); }
+
+function renderWeeklySupp() {
+  document.getElementById('weeklySuppBody').innerHTML = WEEKDAYS.map(day=>`
+    <tr>
+      <td style="color:var(--gold2);font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.5px;white-space:nowrap;">${day.slice(0,3)}</td>
+      <td><input value="${esc(S.weeklySupp[day])}" placeholder="Topic for ${day.charAt(0)+day.slice(1).toLowerCase()}…" onchange="mut(()=>S.weeklySupp['${day}']=this.value);renderDetailTabs()"/></td>
+      <td><input placeholder="Notes…"/></td>
+    </tr>`).join('');
+}
+
+function renderDetailTabs() {
+  const dailyTabs = S.dailySupp.filter(s=>s.topic).map((s,i)=>({id:`d${i}`,label:s.topic.slice(0,14),type:'daily',idx:i}));
+  const weeklyTabs = WEEKDAYS.filter(d=>S.weeklySupp[d]).map(d=>({id:`w${d}`,label:d.slice(0,3),type:'weekly',day:d}));
+  const all = [...dailyTabs,...weeklyTabs];
+  const tabEl = document.getElementById('detailTabs');
+  if (!all.length) { tabEl.innerHTML='<div style="font-size:13px;color:var(--text-faint);font-style:italic;">Enter topics in the tables above.</div>'; document.getElementById('detailContent').innerHTML=''; return; }
+  if (!all.find(t=>t.id===S.currentDetailTab)) S.currentDetailTab = all[0].id;
+  tabEl.innerHTML = all.map(t=>`<div class="dtab ${t.id===S.currentDetailTab?'active':''}" onclick="switchDetail('${t.id}')">${t.label}</div>`).join('');
+  renderDetailSheet(all.find(t=>t.id===S.currentDetailTab));
+}
+
+function switchDetail(id) { mut(()=>S.currentDetailTab=id); renderDetailTabs(); }
+
+function renderDetailSheet(tab) {
+  if (!tab) return;
+  const ds = S.detailSheets[tab.id] || {};
+  const heading = tab.type==='daily' ? `Daily — ${S.dailySupp[tab.idx]?.topic}` : `Weekly — ${tab.day}`;
+  document.getElementById('detailContent').innerHTML = `
+    <div style="font-size:11.5px;color:var(--text-faint);font-style:italic;margin-bottom:10px;">${heading}</div>
+    ${dsField(tab.id,'description','Description','',ds.description)}
+    ${dsField(tab.id,'scripture','Scripture References','',ds.scripture)}
+    ${dsField(tab.id,'objectives','Objectives / Requests','',ds.objectives)}
+    ${dsField(tab.id,'desire','My Desire','What am I asking God to change? What internal shift do I need?',ds.desire)}
+    ${dsField(tab.id,'responsibility','My Responsibility','What is my part? What obedience may be required?',ds.responsibility)}`;
+}
+
+function dsField(tabId,key,label,sub,val='') {
+  return `<div><div class="ds-lbl">${label}</div>${sub?`<div class="ds-sub">${sub}</div>`:''}<textarea class="txa" onchange="mut(()=>{if(!S.detailSheets['${tabId}'])S.detailSheets['${tabId}']={};S.detailSheets['${tabId}']['${key}']=this.value})">${esc(val)}</textarea></div>`;
+}
+
+// ═══════════════════════════════════════
+// SCHEDULE
+// ═══════════════════════════════════════
+const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const schedData = {
+  0:[{time:'7:00 AM',label:'Morning Prayer',type:'prayer'},{time:'8:00 AM',label:'Psalm 23',type:'study'}],
+  1:[{time:'7:00 AM',label:'Intercession',type:'prayer'},{time:'7:45 AM',label:'John 15',type:'study'}],
+  2:[{time:'6:30 AM',label:'Gratitude Prayer',type:'prayer'},{time:'7:30 AM',label:'Romans 8',type:'study'}],
+  3:[{time:'7:00 AM',label:'Prayer Walk',type:'prayer'}],
+  4:[{time:'7:00 AM',label:'Morning Prayer',type:'prayer'},{time:'8:00 AM',label:'Proverbs 3',type:'study'}],
+  5:[{time:'7:00 AM',label:'Family Prayer',type:'prayer'},{time:'8:00 AM',label:'Ephesians 6',type:'study'}],
+  6:[{time:'8:00 AM',label:'Sabbath Prayer',type:'prayer'},{time:'9:00 AM',label:'Isaiah 40',type:'study'}],
+};
+
+function renderSchedule() {
+  const today = new Date();
+  const sow = new Date(today); sow.setDate(today.getDate()-today.getDay()+(S.weekOffset*7));
+  document.getElementById('weekLbl').textContent =
+    sow.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+
+    new Date(sow.getTime()+6*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const grid = document.getElementById('schedGrid');
+  grid.innerHTML = '';
+  for(let i=0;i<7;i++){
+    const d=new Date(sow); d.setDate(sow.getDate()+i);
+    const isToday = d.toDateString()===today.toDateString();
+    const wt = S.weeklySupp[WEEKDAYS[d.getDay()]];
+    const items = [...(schedData[i]||[]), ...(wt?[{time:'',label:wt,type:'prayer'}]:[])];
+    grid.innerHTML += `<div class="sday ${isToday?'today':''}">
+      <div class="sday-hdr"><div class="sday-name">${DAYS_SHORT[d.getDay()]}</div><div class="sday-num">${d.getDate()}</div></div>
+      <div class="sday-body">${items.map(it=>`<div class="sit ${it.type}" onclick="this.classList.toggle('done')"><div class="sit-time">${it.time}</div>${it.label}</div>`).join('')}</div>
+      <button class="sday-add" onclick="addSchedItem(${i})">+ Add</button>
+    </div>`;
+  }
+}
+
+function changeWeek(dir) { mut(()=>S.weekOffset+=dir); renderSchedule(); }
+function addSchedItem(i) { const l=prompt('Add to schedule:'); if(!l)return; if(!schedData[i])schedData[i]=[]; schedData[i].push({time:'',label:l,type:'prayer'}); renderSchedule(); }
+
+// ═══════════════════════════════════════
+// DAILY LOG
+// ═══════════════════════════════════════
+function renderLogDate() {
+  document.getElementById('logDateLbl').textContent = logDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const key = logDate.toISOString().split('T')[0];
+  const log = S.logs[key] || {};
+  document.getElementById('logScripture').value = log.scripture||'';
+  document.getElementById('actA').value = log.adoration||'';
+  document.getElementById('actC').value = log.confession||'';
+  document.getElementById('actT').value = log.thanksgiving||'';
+  document.getElementById('actS').value = log.supplication||'';
+  document.getElementById('actInsight').value = log.insight||'';
+  document.getElementById('actReflect').value = log.reflection||'';
+  const wday = WEEKDAYS[logDate.getDay()];
+  document.getElementById('logWeeklyTopic').textContent = S.weeklySupp[wday] || '(none set)';
+}
+
+function changeLogDay(dir) { logDate = new Date(logDate.getTime()+dir*86400000); renderLogDate(); }
+
+function saveLog() {
+  const key = logDate.toISOString().split('T')[0];
+  mut(()=>{ S.logs[key]={
+    scripture:document.getElementById('logScripture').value,
+    adoration:document.getElementById('actA').value,
+    confession:document.getElementById('actC').value,
+    thanksgiving:document.getElementById('actT').value,
+    supplication:document.getElementById('actS').value,
+    insight:document.getElementById('actInsight').value,
+    reflection:document.getElementById('actReflect').value,
+  };});
+  toast('Log saved ✦');
+}
+
+// ═══════════════════════════════════════
+// WEEKLY REVIEW
+// ═══════════════════════════════════════
+function saveReview() {
+  mut(()=>{ S.review = {
+    r1:document.getElementById('rv1').value,
+    r2:document.getElementById('rv2').value,
+    r3:document.getElementById('rv3').value,
+    r4:document.getElementById('rv4').value,
+    r5:document.getElementById('rv5').value,
+  };});
+  toast('Weekly review saved ✦');
+}
+function addAnsweredRow() {
+  const tb=document.getElementById('answeredBody');
+  const tr=document.createElement('tr');
+  tr.innerHTML='<td><input placeholder="Prayer…"/></td><td><input placeholder="God\'s answer…"/></td>';
+  tb.appendChild(tr);
+}
+
+// ═══════════════════════════════════════
+// PRAYER REQUESTS
+// ═══════════════════════════════════════
+const PRAYER_CATS = ['all','Personal','Family','Church','Community','Missions','Gratitude','answered'];
+
+function renderPrayers() {
+  const bar = document.getElementById('prayerFilterBar');
+  bar.innerHTML = PRAYER_CATS.map(c=>`<div class="pill ${S.prayerFilter===c?'active':''}" onclick="setPrayerFilter('${c}')">${c==='all'?'All':c==='answered'?'Answered ✦':c}</div>`).join('');
+  let list = S.prayers;
+  if(S.prayerFilter==='answered') list=S.prayers.filter(p=>p.answered);
+  else if(S.prayerFilter!=='all') list=S.prayers.filter(p=>p.category===S.prayerFilter);
+  const el = document.getElementById('prayerList');
+  if(!list.length){ el.innerHTML='<div style="font-size:13.5px;color:var(--text-faint);font-style:italic;padding:12px 0;">No requests here yet.</div>'; return; }
+  el.innerHTML = list.map(p=>`
+    <div class="prayer-card">
+      <div class="pc-check ${p.answered?'answered':''}" onclick="togglePrayer(${p.id})"></div>
+      <div class="pc-body">
+        <div class="pc-title ${p.answered?'done':''}">${esc(p.text)}</div>
+        <div class="pc-meta"><span>${p.date}</span><span>${p.answered?'✦ Answered':'Ongoing'}</span></div>
+      </div>
+      <span class="badge">${p.category}</span>
+    </div>`).join('');
+  updateDashboard();
+}
+
+function setPrayerFilter(f) { mut(()=>S.prayerFilter=f); renderPrayers(); }
+function togglePrayer(id) { mut(()=>{ const p=S.prayers.find(x=>x.id===id); if(p) p.answered=!p.answered; }); renderPrayers(); }
+
+function addPrayer() {
+  const text = document.getElementById('newPrayerText').value.trim();
+  if(!text) return;
+  mut(()=>S.prayers.unshift({id:Date.now(),text,category:document.getElementById('newPrayerCat').value,answered:false,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})}));
+  closeModal('addPrayerModal');
+  document.getElementById('newPrayerText').value='';
+  document.getElementById('newPrayerNotes').value='';
+  renderPrayers();
+  toast('Prayer request added ✦');
+}
+
+// ═══════════════════════════════════════
+// MEMORY VERSES
+// ═══════════════════════════════════════
+const VERSE_TOPICS = ['All','Faith','Prayer','Identity','Strength','Love','Peace','Purpose','Gratitude','Other'];
+
+function renderVerses() {
+  const bar = document.getElementById('verseFilterBar');
+  bar.innerHTML = VERSE_TOPICS.map(t=>`<div class="pill ${S.verseFilter===t?'active':''}" onclick="setVerseFilter('${t}')">${t}</div>`).join('');
+  const total = S.verses.length;
+  const mastered = S.verses.filter(v=>v.status==='mastered').length;
+  document.getElementById('verseProg').textContent = `${mastered} of ${total} mastered`;
+  document.getElementById('verseProgBar').style.width = total ? (mastered/total*100)+'%':'0%';
+  const filtered = S.verseFilter==='All' ? S.verses : S.verses.filter(v=>v.topic===S.verseFilter);
+  const el = document.getElementById('verseList');
+  if(!filtered.length){ el.innerHTML='<div style="font-size:13.5px;color:var(--text-faint);font-style:italic;padding:12px 0;">No verses yet — add one above!</div>'; return; }
+  el.innerHTML = filtered.map(v=>`
+    <div class="verse-card">
+      <div class="verse-ref-row">
+        <span class="verse-ref">${esc(v.ref)}</span>
+        <button class="verse-del" onclick="deleteVerse(${v.id})">×</button>
+      </div>
+      <div class="verse-text ${v.hidden?'hidden':''}" id="vt-${v.id}" onclick="toggleHide(${v.id})" title="${v.hidden?'Tap to reveal':'Tap to hide for practice'}">${esc(v.text)}</div>
+      <div class="verse-footer">
+        <span class="verse-trans">${esc(v.translation)}</span>
+        <span class="verse-topic">${v.topic}</span>
+      </div>
+      <div class="status-row">
+        <button class="s-btn ${v.status==='learning'?'learning':''}" onclick="setVerseStatus(${v.id},'learning')">Learning</button>
+        <button class="s-btn ${v.status==='reviewing'?'reviewing':''}" onclick="setVerseStatus(${v.id},'reviewing')">Reviewing</button>
+        <button class="s-btn ${v.status==='mastered'?'mastered':''}" onclick="setVerseStatus(${v.id},'mastered')">Mastered ✦</button>
+        <button class="verse-practice" onclick="practiceVerse(${v.id})">Practice</button>
+      </div>
+    </div>`).join('');
+}
+
+function setVerseFilter(f) { mut(()=>S.verseFilter=f); renderVerses(); }
+function setVerseStatus(id,status) { mut(()=>{ const v=S.verses.find(x=>x.id===id); if(v) v.status=status; }); renderVerses(); }
+function toggleHide(id) { mut(()=>{ const v=S.verses.find(x=>x.id===id); if(v) v.hidden=!v.hidden; }); renderVerses(); }
+function deleteVerse(id) { mut(()=>S.verses=S.verses.filter(x=>x.id!==id)); renderVerses(); }
+function practiceVerse(id) { mut(()=>{ const v=S.verses.find(x=>x.id===id); if(v) v.hidden=true; }); renderVerses(); toast('Verse hidden — try to recall it, then tap to reveal ✦'); }
+
+function addVerse() {
+  const ref=document.getElementById('newVerseRef').value.trim();
+  const text=document.getElementById('newVerseText').value.trim();
+  if(!ref||!text){ toast('Please enter a reference and verse text.'); return; }
+  mut(()=>S.verses.unshift({id:Date.now(),ref,text,translation:document.getElementById('newVerseTrans').value.trim()||'ESV',topic:document.getElementById('newVerseTopic').value,status:'learning',hidden:false}));
+  closeModal('addVerseModal');
+  document.getElementById('newVerseRef').value='';
+  document.getElementById('newVerseText').value='';
+  document.getElementById('newVerseTrans').value='';
+  renderVerses();
+  toast('Verse added ✦');
+}
+
+// ═══════════════════════════════════════
+// AI STUDY
+// ═══════════════════════════════════════
+async function sendAiMsg() {
+  const inp = document.getElementById('aiInp');
+  const msg = inp.value.trim(); if(!msg) return;
+  inp.value=''; await askAI(msg);
+}
+function handleAiKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAiMsg();} }
+function sendPassageToAI(){ const p=document.getElementById('passageInp').value.trim(); if(p) askAI(`Help me study ${p}`); }
+
+function appendMsg(role,html){
+  const el=document.getElementById('aiMsgs');
+  const w=el.querySelector('.ai-welcome'); if(w) w.remove();
+  const div=document.createElement('div');
+  div.className=`msg ${role}`;
+  div.innerHTML=`<div class="msg-av">${role==='ai'?'✦':'S'}</div><div class="msg-bubble">${html}</div>`;
+  el.appendChild(div); el.scrollTop=el.scrollHeight; return div;
+}
+
+async function askAI(question){
+  if(!question) return;
+  appendMsg('user', esc(question));
+  document.getElementById('aiSendBtn').disabled=true;
+  const typing = appendMsg('ai','<div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>');
+  typing.id='typing-msg';
+  S.aiHistory.push({role:'user',content:question});
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:1000,
+      system:'You are a warm, knowledgeable Bible study assistant named Abide. Help Christians study Scripture with depth and devotion. Provide biblical context, cross-references, and practical application. Warm, pastoral tone. Be concise (3-4 paragraphs max). Write naturally without markdown formatting.',
+      messages:S.aiHistory
+    })});
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'I encountered an issue. Please try again.';
+    S.aiHistory.push({role:'assistant',content:reply});
+    const t=document.getElementById('typing-msg');
+    if(t){t.querySelector('.msg-bubble').innerHTML=reply.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');t.id='';}
+  }catch(e){
+    const t=document.getElementById('typing-msg');
+    if(t){t.querySelector('.msg-bubble').textContent='Unable to connect. Please try again.';t.id='';}
+  }
+  document.getElementById('aiSendBtn').disabled=false;
+  document.getElementById('aiMsgs').scrollTop=99999;
+}
+
+function saveNote(){ toast('Study note saved ✦'); }
+
+// ═══════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+
+// ═══════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+</script>
+</body>
+</html>
