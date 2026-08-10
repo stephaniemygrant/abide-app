@@ -6,23 +6,23 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Abide">
-<meta name="theme-color" content="#8a5e2a">
+<meta name="theme-color" content="#2d6b52">
 <title>Abide — Prayer Planner</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#f5efe2;--bg2:#ede4d0;--bg3:#e4d9c2;--card:#faf5eb;
-  --border:#c8b89a;--border-soft:#ddd0b8;
-  --gold:#8a5e2a;--gold2:#6b4318;--gold-light:#a07840;
-  --text:#2e1f0a;--text-dim:#7a6248;--text-faint:#a89070;
-  --green-soft:#d8eddc;--green:#3a7a4a;
+  --bg:#eef2f0;--bg2:#e2ebe6;--bg3:#d4e3da;--card:#f8fbf9;
+  --border:#8ab8a4;--border-soft:#b8d4c8;
+  --gold:#2d6b52;--gold2:#1e4d3a;--gold-light:#3d8a68;
+  --text:#0f2820;--text-dim:#4a6e5e;--text-faint:#7a9e8e;
+  --green-soft:#d4ede0;--green:#2d6b52;
   --sidebar-w:240px;--bottomnav-h:60px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;}
-body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,serif;font-size:15px;}
+body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,serif;font-size:17px;}
 
 /* ── LAYOUT ── */
 .app{display:flex;height:100vh;height:100dvh;overflow:hidden;}
@@ -32,7 +32,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
   width:var(--sidebar-w);background:var(--bg2);
   border-right:1px solid var(--border-soft);
   display:flex;flex-direction:column;flex-shrink:0;
-  overflow-y:auto;box-shadow:2px 0 10px rgba(120,80,30,.07);
+  overflow-y:auto;box-shadow:2px 0 10px rgba(30,77,58,.07);
 }
 .logo{padding:22px 18px 18px;border-bottom:1px solid var(--border-soft);text-align:center;}
 .logo-sym{font-size:18px;color:var(--gold);}
@@ -40,9 +40,9 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .logo-tag{font-size:10.5px;color:var(--text-faint);font-style:italic;margin-top:2px;}
 .nav{flex:1;padding:10px 0;}
 .nav-sec{padding:11px 16px 3px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-faint);font-family:'Cinzel',serif;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:var(--text-dim);font-size:13px;transition:all .18s;border-left:3px solid transparent;}
-.nav-item:hover{color:var(--gold2);background:rgba(138,94,42,.07);}
-.nav-item.active{color:var(--gold2);background:rgba(138,94,42,.11);border-left-color:var(--gold);}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:var(--text-dim);font-size:14px;transition:all .18s;border-left:3px solid transparent;}
+.nav-item:hover{color:var(--gold2);background:rgba(45,107,82,.07);}
+.nav-item.active{color:var(--gold2);background:rgba(45,107,82,.11);border-left-color:var(--gold);}
 .nav-icon{width:18px;text-align:center;font-size:14px;}
 .sidebar-verse{padding:12px 14px;border-top:1px solid var(--border-soft);font-style:italic;font-size:11px;color:var(--text-faint);text-align:center;line-height:1.6;}
 
@@ -64,7 +64,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text-faint);font-size:9.5px;font-family:'Cinzel',serif;letter-spacing:.5px;transition:color .15s;border:none;background:none;padding:0;}
 .bnav-item.active{color:var(--gold);}
 .bnav-icon{font-size:19px;line-height:1;}
-.mobile-menu-overlay{display:none;position:fixed;inset:0;background:rgba(50,35,15,.5);backdrop-filter:blur(2px);z-index:90;}
+.mobile-menu-overlay{display:none;position:fixed;inset:0;background:rgba(15,40,32,.45);backdrop-filter:blur(2px);z-index:90;}
 .mobile-menu-overlay.open{display:block;}
 .mobile-drawer{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--bg2);z-index:95;transform:translateX(-100%);transition:transform .28s ease;overflow-y:auto;display:flex;flex-direction:column;}
 .mobile-drawer.open{transform:translateX(0);}
@@ -75,34 +75,34 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .hrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .hrow .section-title{margin-bottom:0;}
 
-.card{background:var(--card);border:1px solid var(--border-soft);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 5px rgba(120,80,30,.05);}
+.card{background:var(--card);border:1px solid var(--border-soft);border-radius:10px;overflow:hidden;margin-bottom:16px;box-shadow:0 1px 5px rgba(30,77,58,.06);}
 .card-header{padding:12px 18px 10px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;}
-.card-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
-.card-link{font-size:11.5px;color:var(--text-faint);cursor:pointer;transition:color .15s;}
+.card-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+.card-link{font-size:13px;color:var(--text-faint);cursor:pointer;transition:color .15s;}
 .card-link:hover{color:var(--gold);}
 .card-body{padding:16px 18px;}
 
-.btn{background:var(--gold);color:#fff;border:none;border-radius:6px;padding:8px 16px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.btn{background:var(--gold);color:#fff;border:none;border-radius:6px;padding:9px 18px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap;}
 .btn:active{background:var(--gold2);}
-.btn-ghost{background:transparent;color:var(--gold);border:1px solid var(--border);border-radius:6px;padding:7px 13px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.btn-ghost:active{background:rgba(138,94,42,.08);}
-.btn-sm{padding:5px 11px;font-size:9.5px;}
-.btn-danger{background:#c0392b;color:#fff;border:none;border-radius:6px;padding:7px 13px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;cursor:pointer;}
+.btn-ghost{background:transparent;color:var(--gold);border:1px solid var(--border);border-radius:6px;padding:8px 15px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-ghost:active{background:rgba(45,107,82,.08);}
+.btn-sm{padding:6px 13px;font-size:10.5px;}
+.btn-danger{background:#c0392b;color:#fff;border:none;border-radius:6px;padding:8px 15px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;cursor:pointer;}
 
-.lbl{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);font-family:'Cinzel',serif;margin-bottom:5px;margin-top:13px;}
-.inp,.txa,.sel{width:100%;background:#fff;border:1px solid var(--border-soft);border-radius:7px;padding:10px 13px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.lbl{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);font-family:'Cinzel',serif;margin-bottom:6px;margin-top:14px;}
+.inp,.txa,.sel{width:100%;background:#fff;border:1px solid var(--border-soft);border-radius:7px;padding:11px 14px;color:var(--text);font-family:'Crimson Pro',serif;font-size:16px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
 .inp:focus,.txa:focus,.sel:focus{border-color:var(--gold);}
 .txa{resize:vertical;min-height:72px;line-height:1.6;}
 .sel option{background:#fff;}
 
-.pill{background:#fff;border:1px solid var(--border-soft);border-radius:20px;padding:4px 13px;font-size:12px;color:var(--text-dim);cursor:pointer;transition:all .18s;white-space:nowrap;}
-.pill.active,.pill:active{border-color:var(--gold);color:var(--gold2);background:rgba(138,94,42,.09);}
+.pill{background:#fff;border:1px solid var(--border-soft);border-radius:20px;padding:5px 14px;font-size:13px;color:var(--text-dim);cursor:pointer;transition:all .18s;white-space:nowrap;}
+.pill.active,.pill:active{border-color:var(--gold);color:var(--gold2);background:rgba(45,107,82,.09);}
 .filter-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
 
-.badge{display:inline-block;background:var(--bg3);border:1px solid var(--border-soft);border-radius:3px;padding:2px 7px;font-size:9.5px;color:var(--text-dim);font-family:'Cinzel',serif;white-space:nowrap;}
+.badge{display:inline-block;background:var(--bg3);border:1px solid var(--border-soft);border-radius:3px;padding:3px 9px;font-size:11px;color:var(--text-dim);font-family:'Cinzel',serif;white-space:nowrap;}
 
 /* ── MODAL ── */
-.overlay{position:fixed;inset:0;background:rgba(50,35,15,.45);backdrop-filter:blur(3px);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.overlay{position:fixed;inset:0;background:rgba(15,40,32,.45);backdrop-filter:blur(3px);z-index:200;display:none;align-items:flex-end;justify-content:center;}
 .overlay.open{display:flex;}
 .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:24px 20px 32px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;animation:slideUp .28s ease;}
 @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -112,34 +112,34 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);}
 
 /* ── DASHBOARD ── */
-.vod-card{background:linear-gradient(135deg,#fdf8ef,#f0e8d2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(120,80,30,.08);}
-.vod-card::before{content:'"';position:absolute;top:-8px;left:12px;font-family:'Cormorant Garamond',serif;font-size:100px;color:rgba(138,94,42,.07);line-height:1;pointer-events:none;}
+.vod-card{background:linear-gradient(135deg,#eef6f2,#daeee6);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(30,77,58,.08);}
+.vod-card::before{content:'"';position:absolute;top:-8px;left:12px;font-family:'Cormorant Garamond',serif;font-size:100px;color:rgba(45,107,82,.08);line-height:1;pointer-events:none;}
 .vod-lbl{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:9px;}
 .vod-text{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;font-weight:300;color:var(--text);line-height:1.7;margin-bottom:7px;}
 .vod-ref{font-size:12.5px;color:var(--gold2);font-weight:500;}
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
 .stat-card{background:var(--card);border:1px solid var(--border-soft);border-radius:9px;padding:14px 10px;text-align:center;}
 .stat-num{font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--gold2);font-weight:300;line-height:1;}
-.stat-lbl{font-size:10.5px;color:var(--text-dim);margin-top:3px;line-height:1.3;}
+.stat-lbl{font-size:12px;color:var(--text-dim);margin-top:3px;line-height:1.3;}
 
 /* ── PRAYER ITEMS ── */
-.prayer-card{background:var(--card);border:1px solid var(--border-soft);border-radius:9px;padding:13px 16px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;box-shadow:0 1px 4px rgba(120,80,30,.04);}
+.prayer-card{background:var(--card);border:1px solid var(--border-soft);border-radius:9px;padding:13px 16px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;box-shadow:0 1px 4px rgba(30,77,58,.05);}
 .pc-check{width:22px;height:22px;border:1.5px solid var(--border);border-radius:50%;cursor:pointer;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .pc-check.answered{background:var(--green-soft);border-color:var(--green);}
 .pc-check.answered::after{content:'✓';font-size:12px;color:var(--green);}
 .pc-body{flex:1;min-width:0;}
-.pc-title{font-size:14.5px;color:var(--text);line-height:1.4;}
+.pc-title{font-size:16px;color:var(--text);line-height:1.4;}
 .pc-title.done{text-decoration:line-through;color:var(--text-faint);}
-.pc-meta{font-size:11px;color:var(--text-faint);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap;}
+.pc-meta{font-size:12.5px;color:var(--text-faint);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap;}
 
 /* ── DAILY LOG ── */
 .date-nav{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
 .date-btn{background:var(--card);border:1px solid var(--border-soft);border-radius:7px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text-dim);flex-shrink:0;}
 .date-lbl{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--text);flex:1;text-align:center;}
 .acts-block{background:#fff;border:1px solid var(--border-soft);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
-.acts-hdr{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:2px;}
-.acts-sub{font-size:11.5px;color:var(--text-faint);font-style:italic;margin-bottom:8px;}
-.acts-ta{width:100%;background:transparent;border:none;resize:none;color:var(--text);font-family:'Crimson Pro',serif;font-size:14.5px;line-height:1.7;outline:none;min-height:60px;}
+.acts-hdr{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:2px;}
+.acts-sub{font-size:13px;color:var(--text-faint);font-style:italic;margin-bottom:8px;}
+.acts-ta{width:100%;background:transparent;border:none;resize:none;color:var(--text);font-family:'Crimson Pro',serif;font-size:16px;line-height:1.7;outline:none;min-height:60px;}
 .acts-ta::placeholder{color:var(--text-faint);font-style:italic;}
 
 /* ── SUPPLICATION TABLE ── */
@@ -151,13 +151,13 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 
 /* ── WEEKLY REVIEW ── */
 .rv-q{margin-bottom:16px;}
-.rv-lbl{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
-.rv-prompt{font-size:11.5px;color:var(--text-faint);font-style:italic;margin-bottom:6px;}
+.rv-lbl{font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+.rv-prompt{font-size:13px;color:var(--text-faint);font-style:italic;margin-bottom:6px;}
 
 /* ── VERSE CARDS ── */
 .verse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:13px;}
-.verse-card{background:var(--card);border:1px solid var(--border-soft);border-radius:11px;padding:18px 20px;position:relative;overflow:hidden;box-shadow:0 1px 5px rgba(120,80,30,.05);}
-.verse-card::before{content:'"';position:absolute;top:-6px;right:10px;font-family:'Cormorant Garamond',serif;font-size:70px;color:rgba(138,94,42,.06);line-height:1;pointer-events:none;}
+.verse-card{background:var(--card);border:1px solid var(--border-soft);border-radius:11px;padding:18px 20px;position:relative;overflow:hidden;box-shadow:0 1px 5px rgba(30,77,58,.06);}
+.verse-card::before{content:'"';position:absolute;top:-6px;right:10px;font-family:'Cormorant Garamond',serif;font-size:70px;color:rgba(45,107,82,.07);line-height:1;pointer-events:none;}
 .verse-ref-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .verse-ref{font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:1px;color:var(--gold);}
 .verse-del{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:16px;line-height:1;padding:0 2px;}
@@ -165,7 +165,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .verse-text.hidden{color:transparent;background:var(--bg3);border-radius:5px;cursor:pointer;user-select:none;}
 .verse-footer{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .verse-trans{font-size:11px;color:var(--text-faint);}
-.verse-topic{background:rgba(138,94,42,.08);border:1px solid var(--border-soft);border-radius:10px;padding:2px 9px;font-size:10px;color:var(--gold2);font-family:'Cinzel',serif;}
+.verse-topic{background:rgba(45,107,82,.08);border:1px solid var(--border-soft);border-radius:10px;padding:2px 9px;font-size:10px;color:var(--gold2);font-family:'Cinzel',serif;}
 .status-row{display:flex;gap:5px;flex-wrap:wrap;}
 .s-btn{border:1px solid var(--border-soft);background:#fff;border-radius:5px;padding:4px 9px;font-size:10px;cursor:pointer;transition:all .18s;font-family:'Cinzel',serif;color:var(--text-dim);}
 .s-btn.learning{background:rgba(201,180,80,.12);border-color:#b8960a;color:#7a6000;}
@@ -188,7 +188,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .today .sday-num{color:var(--gold2);}
 .sday-body{padding:6px;display:flex;flex-direction:column;gap:4px;}
 .sit{background:#fff;border-radius:4px;padding:4px 6px;font-size:10px;color:var(--text-dim);border-left:2px solid var(--border-soft);cursor:pointer;}
-.sit.prayer{border-left-color:rgba(138,94,42,.5);}
+.sit.prayer{border-left-color:rgba(45,107,82,.5);}
 .sit.study{border-left-color:rgba(58,122,74,.5);}
 .sit.done{opacity:.45;text-decoration:line-through;}
 .sit-time{font-size:9px;color:var(--text-faint);}
@@ -197,7 +197,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 /* ── DISCIPLINE GRID ── */
 .disc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:8px;}
 .disc-item{background:#fff;border:1px solid var(--border-soft);border-radius:7px;padding:9px 12px;font-size:13px;color:var(--text-dim);display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .18s;}
-.disc-item.checked{background:rgba(138,94,42,.09);border-color:var(--gold);color:var(--gold2);}
+.disc-item.checked{background:rgba(45,107,82,.09);border-color:var(--gold);color:var(--gold2);}
 .disc-chk{width:14px;height:14px;border:1px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;}
 .disc-item.checked .disc-chk{background:var(--gold);border-color:var(--gold);}
 .disc-item.checked .disc-chk::after{content:'✓';font-size:9px;color:#fff;}
@@ -205,7 +205,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 /* ── DETAIL TABS ── */
 .dtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
 .dtab{background:#fff;border:1px solid var(--border-soft);border-radius:6px;padding:5px 12px;font-size:11px;color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;letter-spacing:.3px;}
-.dtab.active{background:rgba(138,94,42,.1);border-color:var(--gold);color:var(--gold2);}
+.dtab.active{background:rgba(45,107,82,.1);border-color:var(--gold);color:var(--gold2);}
 .ds-lbl{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:3px;margin-top:13px;}
 .ds-sub{font-size:11.5px;color:var(--text-faint);font-style:italic;margin-bottom:6px;}
 
@@ -230,7 +230,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .msg.user .msg-av{background:var(--gold);color:#fff;}
 .msg-bubble{max-width:84%;padding:9px 13px;border-radius:10px;font-size:13.5px;line-height:1.6;}
 .msg.ai .msg-bubble{background:#fff;border:1px solid var(--border-soft);color:var(--text);border-top-left-radius:2px;}
-.msg.user .msg-bubble{background:rgba(138,94,42,.1);border:1px solid var(--border-soft);color:var(--text);border-top-right-radius:2px;}
+.msg.user .msg-bubble{background:rgba(45,107,82,.1);border:1px solid var(--border-soft);color:var(--text);border-top-right-radius:2px;}
 .ai-input-wrap{padding:10px 12px;border-top:1px solid var(--border-soft);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
 .ai-inp{flex:1;background:#fff;border:1px solid var(--border-soft);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Crimson Pro',serif;font-size:14px;resize:none;outline:none;max-height:90px;}
 .ai-inp:focus{border-color:var(--gold);}
@@ -424,19 +424,48 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
     <div class="view" id="view-weekly">
       <div class="hrow">
         <div class="section-title">Weekly Review</div>
-        <button class="btn btn-sm" onclick="saveReview()">Save</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-ghost btn-sm" onclick="generateWeeklyReview()" id="generateBtn">✦ Generate from logs</button>
+          <button class="btn btn-sm" onclick="saveReview()">Save</button>
+        </div>
       </div>
-      <div class="rv-q"><div class="rv-lbl">Scripture Takeaway</div><div class="rv-prompt">Most notable thing God taught me — any verse to memorize?</div><textarea class="txa" id="rv1" placeholder="This week God showed me…"></textarea></div>
-      <div class="rv-q"><div class="rv-lbl">Theme in Confessions</div><div class="rv-prompt">Is there a pattern? What heart changes do I need?</div><textarea class="txa" id="rv2" placeholder="I noticed a pattern of…"></textarea></div>
-      <div class="rv-q"><div class="rv-lbl">Theme in Thankfulness</div><div class="rv-prompt">What recurring theme in my gratitude this week?</div><textarea class="txa" id="rv3" placeholder="I kept giving thanks for…"></textarea></div>
-      <div class="rv-q"><div class="rv-lbl">Topics for Next Week</div><div class="rv-prompt">Recurring prayers to add to focused prayer topics?</div><textarea class="txa" id="rv4" placeholder="I want to add…"></textarea></div>
-      <div class="rv-q"><div class="rv-lbl">Heart Check</div><div class="rv-prompt">Do God's answers align with my desires?</div><textarea class="txa" id="rv5" placeholder="Reflecting on answered prayers…"></textarea></div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">Prayers Answered This Week</div><button class="btn-ghost btn-sm" onclick="addAnsweredRow()">+ Add</button></div>
-        <div style="overflow-x:auto;">
-          <table class="supp-table" style="margin-top:0;"><thead><tr><th>Prayer</th><th>How God Answered</th></tr></thead><tbody id="answeredBody">
-            <tr><td><input placeholder="Prayer…"/></td><td><input placeholder="God's answer…"/></td></tr>
-          </tbody></table>
+
+      <!-- Week selector -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-body" style="padding:12px 16px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="date-btn" onclick="changeReviewWeek(-1)">‹</button>
+            <div style="flex:1;text-align:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;color:var(--text);" id="reviewWeekLbl"></div>
+            <button class="date-btn" onclick="changeReviewWeek(1)">›</button>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;" id="reviewDayDots"></div>
+        </div>
+      </div>
+
+      <!-- AI generating state -->
+      <div id="reviewGenerating" style="display:none;text-align:center;padding:32px 16px;">
+        <div style="font-size:22px;color:var(--gold);margin-bottom:10px;">✦</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--text-dim);">Reading your week's logs…</div>
+        <div style="font-size:13px;color:var(--text-faint);margin-top:6px;">This will take just a moment</div>
+        <div class="typing-dots" style="justify-content:center;margin-top:14px;">
+          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+      </div>
+
+      <!-- Review fields -->
+      <div id="reviewFields">
+        <div class="rv-q"><div class="rv-lbl">Scripture Takeaway</div><div class="rv-prompt">Most notable thing God taught me — any verse to memorize?</div><textarea class="txa" id="rv1" placeholder="This week God showed me…"></textarea></div>
+        <div class="rv-q"><div class="rv-lbl">Theme in Confessions</div><div class="rv-prompt">Is there a pattern? What heart changes do I need?</div><textarea class="txa" id="rv2" placeholder="I noticed a pattern of…"></textarea></div>
+        <div class="rv-q"><div class="rv-lbl">Theme in Thankfulness</div><div class="rv-prompt">What recurring theme in my gratitude this week?</div><textarea class="txa" id="rv3" placeholder="I kept giving thanks for…"></textarea></div>
+        <div class="rv-q"><div class="rv-lbl">Topics for Next Week</div><div class="rv-prompt">Recurring prayers to add to focused prayer topics?</div><textarea class="txa" id="rv4" placeholder="I want to add…"></textarea></div>
+        <div class="rv-q"><div class="rv-lbl">Heart Check</div><div class="rv-prompt">Do God's answers align with my desires?</div><textarea class="txa" id="rv5" placeholder="Reflecting on answered prayers…"></textarea></div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Prayers Answered This Week</div><button class="btn-ghost btn-sm" onclick="addAnsweredRow()">+ Add</button></div>
+          <div style="overflow-x:auto;">
+            <table class="supp-table" style="margin-top:0;"><thead><tr><th>Prayer</th><th>How God Answered</th></tr></thead><tbody id="answeredBody">
+              <tr><td><input placeholder="Prayer…"/></td><td><input placeholder="God's answer…"/></td></tr>
+            </tbody></table>
+          </div>
         </div>
       </div>
     </div>
@@ -584,9 +613,17 @@ function saveState() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch(e) {}
 }
 
+// Returns YYYY-MM-DD in the user's LOCAL timezone (not UTC)
+function localDateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 // Default clean state
 const defaultState = () => ({
-  startDate: new Date().toISOString().split('T')[0],
+  startDate: localDateKey(new Date()),
   prayers: [],
   vision: { text: '', disciplines: [] },
   dailySupp: [{topic:'',notes:''},{topic:'',notes:''},{topic:'',notes:''},{topic:'',notes:''},{topic:'',notes:''}],
@@ -663,6 +700,7 @@ function nav(viewId) {
   if (viewId==='supplication') initSupplication();
   if (viewId==='vision') loadVision();
   if (viewId==='dashboard') updateDashboard();
+  if (viewId==='weekly') renderReviewWeek();
 }
 
 function openDrawer() {
@@ -860,7 +898,7 @@ function addSchedItem(i) { const l=prompt('Add to schedule:'); if(!l)return; if(
 // ═══════════════════════════════════════
 function renderLogDate() {
   document.getElementById('logDateLbl').textContent = logDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  const key = logDate.toISOString().split('T')[0];
+  const key = localDateKey(logDate);
   const log = S.logs[key] || {};
   document.getElementById('logScripture').value = log.scripture||'';
   document.getElementById('actA').value = log.adoration||'';
@@ -876,7 +914,7 @@ function renderLogDate() {
 function changeLogDay(dir) { logDate = new Date(logDate.getTime()+dir*86400000); renderLogDate(); }
 
 function saveLog() {
-  const key = logDate.toISOString().split('T')[0];
+  const key = localDateKey(logDate);
   mut(()=>{ S.logs[key]={
     scripture:document.getElementById('logScripture').value,
     adoration:document.getElementById('actA').value,
@@ -892,8 +930,62 @@ function saveLog() {
 // ═══════════════════════════════════════
 // WEEKLY REVIEW
 // ═══════════════════════════════════════
+let reviewWeekOffset = 0;
+
+function getReviewWeekDates(offset) {
+  const today = new Date();
+  // Start on Sunday of the current week
+  const sun = new Date(today);
+  sun.setDate(today.getDate() - today.getDay() + (offset * 7));
+  sun.setHours(0,0,0,0);
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(sun);
+    d.setDate(sun.getDate() + i);
+    days.push(d);
+  }
+  return days;
+}
+
+function renderReviewWeek() {
+  const days = getReviewWeekDates(reviewWeekOffset);
+  const first = days[0]; const last = days[6];
+  document.getElementById('reviewWeekLbl').textContent =
+    first.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' – ' +
+    last.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+  // Day dots showing which days have log entries
+  const dots = document.getElementById('reviewDayDots');
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  dots.innerHTML = days.map(d => {
+    const key = localDateKey(d);
+    const hasLog = S.logs[key] && Object.values(S.logs[key]).some(v=>v && v.trim());
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+      <div style="width:10px;height:10px;border-radius:50%;background:${hasLog?'var(--gold)':'var(--border-soft)'};border:1px solid ${hasLog?'var(--gold2)':'var(--border)'};" title="${key}"></div>
+      <div style="font-size:10px;color:${hasLog?'var(--gold2)':'var(--text-faint)'};font-family:'Cinzel',serif;">${dayNames[d.getDay()]}</div>
+    </div>`;
+  }).join('');
+
+  // Load saved review for this week if any
+  const weekKey = localDateKey(days[0]);
+  const saved = S.review?.[weekKey] || {};
+  document.getElementById('rv1').value = saved.r1||'';
+  document.getElementById('rv2').value = saved.r2||'';
+  document.getElementById('rv3').value = saved.r3||'';
+  document.getElementById('rv4').value = saved.r4||'';
+  document.getElementById('rv5').value = saved.r5||'';
+}
+
+function changeReviewWeek(dir) {
+  reviewWeekOffset += dir;
+  renderReviewWeek();
+}
+
 function saveReview() {
-  mut(()=>{ S.review = {
+  const days = getReviewWeekDates(reviewWeekOffset);
+  const weekKey = localDateKey(days[0]);
+  if (!S.review) S.review = {};
+  mut(()=>{ S.review[weekKey] = {
     r1:document.getElementById('rv1').value,
     r2:document.getElementById('rv2').value,
     r3:document.getElementById('rv3').value,
@@ -902,11 +994,83 @@ function saveReview() {
   };});
   toast('Weekly review saved ✦');
 }
+
 function addAnsweredRow() {
   const tb=document.getElementById('answeredBody');
   const tr=document.createElement('tr');
   tr.innerHTML='<td><input placeholder="Prayer…"/></td><td><input placeholder="God\'s answer…"/></td>';
   tb.appendChild(tr);
+}
+
+async function generateWeeklyReview() {
+  const days = getReviewWeekDates(reviewWeekOffset);
+
+  // Gather all log entries for the week
+  const entries = [];
+  days.forEach(d => {
+    const key = localDateKey(d);
+    const log = S.logs[key];
+    if (log && Object.values(log).some(v=>v&&v.trim())) {
+      entries.push({ date: d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}), ...log });
+    }
+  });
+
+  if (entries.length === 0) {
+    toast('No log entries found for this week. Write in your daily log first!');
+    return;
+  }
+
+  // Show generating state
+  document.getElementById('reviewGenerating').style.display = 'block';
+  document.getElementById('reviewFields').style.display = 'none';
+  document.getElementById('generateBtn').disabled = true;
+
+  // Build the prompt
+  const logSummary = entries.map(e => `
+--- ${e.date} ---
+Scripture: ${e.scripture||''}
+Adoration: ${e.adoration||''}
+Confession: ${e.confession||''}
+Thanksgiving: ${e.thanksgiving||''}
+Supplication: ${e.supplication||''}
+Insight: ${e.insight||''}
+Reflection: ${e.reflection||''}
+  `.trim()).join('\n\n');
+
+  const prompt = `Here are my daily prayer log entries from this past week:\n\n${logSummary}\n\nBased on these entries, please write a thoughtful weekly review for me. Return ONLY a JSON object with exactly these five keys — no preamble, no markdown, no extra text:\n{\n  "r1": "Scripture takeaway — the most notable thing God taught me this week from Scripture, including any verse worth memorizing",\n  "r2": "Theme in confessions — any patterns you notice, what heart changes might be needed",\n  "r3": "Theme in thankfulness — recurring themes in my gratitude",\n  "r4": "Topics for next week — prayers or themes that should carry forward or be added to focused prayer",\n  "r5": "Heart check — reflection on whether God's answers seem to align with my desires, and any adjustments needed"\n}\n\nWrite warmly and personally, as if you are a wise spiritual friend reflecting my own words back to me. Draw directly from what I actually wrote. Be specific, not generic.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system: 'You are a warm, spiritually perceptive assistant helping a Christian woman reflect on her week of prayer and Scripture. You write in a personal, pastoral tone. Always return valid JSON only — no markdown, no explanation, just the JSON object.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '';
+    // Strip any accidental markdown fences
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const result = JSON.parse(clean);
+
+    document.getElementById('rv1').value = result.r1 || '';
+    document.getElementById('rv2').value = result.r2 || '';
+    document.getElementById('rv3').value = result.r3 || '';
+    document.getElementById('rv4').value = result.r4 || '';
+    document.getElementById('rv5').value = result.r5 || '';
+
+    toast('Review generated — edit freely and save when ready ✦');
+  } catch(e) {
+    toast('Something went wrong. Try again.');
+  } finally {
+    document.getElementById('reviewGenerating').style.display = 'none';
+    document.getElementById('reviewFields').style.display = 'block';
+    document.getElementById('generateBtn').disabled = false;
+  }
 }
 
 // ═══════════════════════════════════════
