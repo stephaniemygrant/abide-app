@@ -1092,6 +1092,7 @@ function renderPrayers() {
       <div class="pc-check ${p.answered?'answered':''}" onclick="togglePrayer(${p.id})"></div>
       <div class="pc-body">
         <div class="pc-title ${p.answered?'done':''}">${esc(p.text)}</div>
+        ${p.notes?`<div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-top:5px;line-height:1.5;">${esc(p.notes)}</div>`:''}
         <div class="pc-meta"><span>${p.date}</span><span>${p.answered?'✦ Answered':'Ongoing'}</span></div>
       </div>
       <span class="badge">${p.category}</span>
@@ -1105,7 +1106,7 @@ function togglePrayer(id) { mut(()=>{ const p=S.prayers.find(x=>x.id===id); if(p
 function addPrayer() {
   const text = document.getElementById('newPrayerText').value.trim();
   if(!text) return;
-  mut(()=>S.prayers.unshift({id:Date.now(),text,category:document.getElementById('newPrayerCat').value,answered:false,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})}));
+  mut(()=>S.prayers.unshift({id:Date.now(),text,category:document.getElementById('newPrayerCat').value,notes:document.getElementById('newPrayerNotes').value.trim(),answered:false,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})}));
   closeModal('addPrayerModal');
   document.getElementById('newPrayerText').value='';
   document.getElementById('newPrayerNotes').value='';
