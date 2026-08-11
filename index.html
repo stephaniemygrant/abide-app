@@ -1097,7 +1097,7 @@ function renderPrayers() {
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
         <span class="badge">${p.category}</span>
-        <button onclick="deletePrayer(${p.id})" style="background:none;border:none;color:var(--text-faint);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;" title="Delete">×</button>
+        <button onclick="deletePrayer(${p.id}, this)" style="background:none;border:none;color:var(--text-faint);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;transition:color .2s;" title="Delete">×</button>
       </div>
     </div>`).join('');
   updateDashboard();
@@ -1105,7 +1105,18 @@ function renderPrayers() {
 
 function setPrayerFilter(f) { mut(()=>S.prayerFilter=f); renderPrayers(); }
 function togglePrayer(id) { mut(()=>{ const p=S.prayers.find(x=>x.id===id); if(p) p.answered=!p.answered; }); renderPrayers(); }
-function deletePrayer(id) { if(!confirm('Remove this prayer request?')) return; mut(()=>S.prayers=S.prayers.filter(x=>x.id!==id)); renderPrayers(); toast('Prayer request removed'); }
+function deletePrayer(id, btn) {
+  if (btn.dataset.confirm !== 'yes') {
+    btn.dataset.confirm = 'yes';
+    btn.style.color = '#c0392b';
+    btn.title = 'Tap again to confirm';
+    setTimeout(() => { btn.dataset.confirm = ''; btn.style.color = ''; }, 2500);
+    return;
+  }
+  mut(()=>S.prayers=S.prayers.filter(x=>x.id!==id));
+  renderPrayers();
+  toast('Prayer request removed');
+}
 
 function addPrayer() {
   const text = document.getElementById('newPrayerText').value.trim();
