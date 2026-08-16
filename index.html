@@ -306,10 +306,10 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 
     <!-- DASHBOARD -->
     <div class="view active" id="view-dashboard">
-      <div class="vod-card">
+      <div class="vod-card" id="vodCard">
         <div class="vod-lbl">✦ Verse of the Day</div>
-        <div class="vod-text">"Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God."</div>
-        <div class="vod-ref">Philippians 4:6 · ESV</div>
+        <div class="vod-text" id="vodText" style="color:var(--text-faint);font-size:16px;">Loading today's verse…</div>
+        <div class="vod-ref" id="vodRef"></div>
       </div>
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-num" id="statActive">0</div><div class="stat-lbl">Active Requests</div></div>
@@ -766,6 +766,53 @@ function updateDashboard() {
         <div style="font-size:14px;color:var(--text);">${t.topic}</div>
       </div>`).join('');
   }
+
+  // Load verse of the day (cached per day so it doesn't re-fetch on every nav)
+  const todayKey = localDateKey(today);
+  if (S.vod && S.vod.date === todayKey) {
+    renderVOD(S.vod);
+  } else {
+    fetchVerseOfDay(dayNum, topics, todayKey);
+  }
+}
+
+async function fetchVerseOfDay(dayNum, topics, todayKey) {
+  const topicHints = topics.length
+    ? `My current prayer topics are: ${topics.slice(0,4).map(t=>t.topic).join(', ')}.`
+    : '';
+  const prompt = `I am on day ${dayNum} of a 90-day prayer journey. ${topicHints} Please choose one encouraging Bible verse that is fitting for where I am in this journey. Return ONLY a JSON object with no markdown, no preamble, exactly like this: {"text":"the full verse text in quotes","reference":"Book Chapter:Verse","translation":"ESV"}. Choose a meaningful verse — not just the most commonly quoted one.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        system: 'You are a thoughtful Bible teacher. Return only valid JSON — no markdown, no explanation, nothing else.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '';
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const vod = { ...JSON.parse(clean), date: todayKey };
+    mut(() => S.vod = vod);
+    renderVOD(vod);
+  } catch(e) {
+    // Fallback if offline or error
+    renderVOD({ text: '"Do not be anxious about anything, but in everything by prayer and supplication with thanksgiving let your requests be made known to God."', reference: 'Philippians 4:6', translation: 'ESV' });
+  }
+}
+
+function renderVOD(vod) {
+  const textEl = document.getElementById('vodText');
+  const refEl = document.getElementById('vodRef');
+  if (!textEl || !refEl) return;
+  textEl.style.color = '';
+  textEl.style.fontSize = '';
+  textEl.textContent = vod.text;
+  refEl.textContent = `${vod.reference} · ${vod.translation}`;
 }
 
 // ═══════════════════════════════════════
@@ -1088,23 +1135,37 @@ function renderPrayers() {
   const el = document.getElementById('prayerList');
   if(!list.length){ el.innerHTML='<div style="font-size:13.5px;color:var(--text-faint);font-style:italic;padding:12px 0;">No requests here yet.</div>'; return; }
   el.innerHTML = list.map(p=>`
-    <div class="prayer-card">
-      <div class="pc-check ${p.answered?'answered':''}" onclick="togglePrayer(${p.id})"></div>
-      <div class="pc-body">
-        <div class="pc-title ${p.answered?'done':''}">${esc(p.text)}</div>
-        ${p.notes?`<div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-top:5px;line-height:1.5;">${esc(p.notes)}</div>`:''}
-        <div class="pc-meta"><span>${p.date}</span><span>${p.answered?'✦ Answered':'Ongoing'}</span></div>
+    <div class="prayer-card" style="flex-direction:column;gap:0;">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div class="pc-check ${p.answered?'answered':''}" onclick="togglePrayer(${p.id})"></div>
+        <div class="pc-body">
+          <div class="pc-title ${p.answered?'done':''}">${esc(p.text)}</div>
+          ${p.notes?`<div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-top:5px;line-height:1.5;">${esc(p.notes)}</div>`:''}
+          <div class="pc-meta"><span>${p.date}</span><span>${p.answered?'✦ Answered':'Ongoing'}</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
+          <span class="badge">${p.category}</span>
+          <button onclick="deletePrayer(${p.id}, this)" style="background:none;border:none;color:var(--text-faint);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;transition:color .2s;" title="Delete">×</button>
+        </div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
-        <span class="badge">${p.category}</span>
-        <button onclick="deletePrayer(${p.id}, this)" style="background:none;border:none;color:var(--text-faint);font-size:18px;cursor:pointer;line-height:1;padding:0 2px;transition:color .2s;" title="Delete">×</button>
-      </div>
+      ${p.answered ? `
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-soft);">
+          <div style="font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:6px;">✦ How God Answered</div>
+          <textarea
+            style="width:100%;background:var(--green-soft);border:1px solid var(--border-soft);border-radius:7px;padding:9px 12px;font-family:'Crimson Pro',serif;font-size:16px;color:var(--text);line-height:1.6;resize:none;outline:none;min-height:70px;"
+            placeholder="Write how God answered this prayer…"
+            onchange="saveAnswerNote(${p.id}, this.value)"
+            onfocus="this.style.borderColor='var(--green)'"
+            onblur="this.style.borderColor='var(--border-soft)'"
+          >${esc(p.answerNote||'')}</textarea>
+        </div>` : ''}
     </div>`).join('');
   updateDashboard();
 }
 
 function setPrayerFilter(f) { mut(()=>S.prayerFilter=f); renderPrayers(); }
 function togglePrayer(id) { mut(()=>{ const p=S.prayers.find(x=>x.id===id); if(p) p.answered=!p.answered; }); renderPrayers(); }
+function saveAnswerNote(id, val) { mut(()=>{ const p=S.prayers.find(x=>x.id===id); if(p) p.answerNote=val; }); }
 function deletePrayer(id, btn) {
   if (btn.dataset.confirm !== 'yes') {
     btn.dataset.confirm = 'yes';
